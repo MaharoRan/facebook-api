@@ -1,0 +1,882 @@
+{
+	"info": {
+		"_postman_id": "41575639-567e6988-4849-4cd6-b608-f0aa79f296f8",
+		"name": "Facebook",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Create an event",
+					"id": "41575639-40f92f73-ad99-4d1f-8906-a7fa1e9e70c9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\":\"Festival Trea\",\r\n    \"description\":\"Urbain\",\r\n    \"date_debut\":\"2025-06-22\",\r\n    \"date_fin\":\"2025-06-25\",\r\n    \"lieu\":\"Paris\",\r\n    \"photo\":\"www\",\r\n    \"public\": true,\r\n    \"organisateurs\": [],\r\n    \"participants\": [],\r\n    \"groupe\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/event",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"event"
+							]
+						},
+						"description": "Purpose: Create a new event within a specific group.\n\nHTTP\n- Method: POST\n- URL: localhost:3000/groupe/69033ef2191350f83c6a0136/event\n\nRequest body\n- Content-Type: application/json (raw)\n- Fields:\n  Required\n  - nom (string): Event name. Example: \"Festival Trea\"\n  - date_debut (string, ISO date YYYY-MM-DD): Start date. Example: \"2025-06-22\"\n  - date_fin (string, ISO date YYYY-MM-DD): End date. Example: \"2025-06-25\"\n  - lieu (string): Location. Example: \"Paris\"\n  Optional\n  - description (string): Short description. Example: \"Urbain\"\n  - photo (string|URL): Event image URL. Example: \"https://example.com/image.jpg\"\n  - public (boolean): Whether the event is public. Default: true. Example: true\n  - organisateurs (array<string|id>): Organizer user IDs. Example: [\"u_123\", \"u_456\"]\n  - participants (array<string|id>): Participant user IDs. Example: [\"u_789\"]\n  - groupe (string|id): Group ID; usually derived from path and can be left empty. Example: \"69033ef2191350f83c6a0136\"\n\nExample request body\n{\n  \"nom\": \"Festival Trea\",\n  \"description\": \"Urbain\",\n  \"date_debut\": \"2025-06-22\",\n  \"date_fin\": \"2025-06-25\",\n  \"lieu\": \"Paris\",\n  \"photo\": \"https://example.com/image.jpg\",\n  \"public\": true,\n  \"organisateurs\": [\"u_123\"],\n  \"participants\": [\"u_789\"],\n  \"groupe\": \"69033ef2191350f83c6a0136\"\n}\n\nResponses (expected)\n- 201 Created: Event successfully created. Returns the created event object (including its unique id).\n- 400 Bad Request: Validation error (e.g., missing nom/date_debut/date_fin/lieu, invalid dates, date_fin before date_debut, invalid field types).\n- 401 Unauthorized/403 Forbidden: Authentication/authorization failure (if the API is protected).\n- 404 Not Found: Group not found for the provided group ID.\n- 409 Conflict: Event with same name and date already exists (if deduplication is enforced).\n- 500 Internal Server Error: Unexpected server error.\n\ncURL example\ncurl -X POST \\\n  'http://localhost:3000/groupe/69033ef2191350f83c6a0136/event' \\\n  -H 'Content-Type: application/json' \\\n  -d '{\n    \"nom\": \"Festival Trea\",\n    \"description\": \"Urbain\",\n    \"date_debut\": \"2025-06-22\",\n    \"date_fin\": \"2025-06-25\",\n    \"lieu\": \"Paris\",\n    \"photo\": \"https://example.com/image.jpg\",\n    \"public\": true,\n    \"organisateurs\": [],\n    \"participants\": [],\n    \"groupe\": \"69033ef2191350f83c6a0136\"\n  }'"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all events of a group",
+					"id": "41575639-b5eb7f0f-177c-48e0-9326-ec437946b96d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Les aventuriers\",\r\n    \"description\": \"Fans d'aventures\",\r\n    \"icone\": \"767\",\r\n    \"photo\": \"bg\",\r\n    \"type\": \"public\",\r\n    \"publication\":true,\r\n    \"creation\": true,\r\n    \"membres\": [],\r\n    \"admins\": []\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/events",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"events"
+							]
+						},
+						"description": "Purpose\nRetrieve the list of events associated with a specific group. Useful for displaying upcoming/past events for a group in your app or for synchronization/reporting.\n\nEndpoint\nGET /groupe/:groupId/events\n- Example: GET localhost:3000/groupe/69033ef2191350f83c6a0136/events\n\nPath parameters\n- groupId (string, required): The unique identifier of the group whose events you want to fetch.\n\nQuery parameters\n- None by default. If your API supports filtering (e.g., ?status=upcoming|past, ?limit, ?offset, ?from, ?to), add them here when applicable.\n\nAuthentication\n- Not specified in this request. If your API requires auth (e.g., Bearer token), configure it under the Auth tab or inherit from the folder/collection.\n\nRequest body\n- Not used for GET requests. The currently configured raw body will be ignored by most servers and can be removed. Keep the body empty for this GET.\n\nExpected responses\n- 200 OK: Returns an array of event objects for the given group.\n- 404 Not Found: Group not found.\n- 401/403: Authentication/authorization failure if the API enforces auth.\n\nSample successful response (illustrative)\n[\n  {\n    \"id\": \"evt_123\",\n    \"groupId\": \"69033ef2191350f83c6a0136\",\n    \"name\": \"Monthly Meetup\",\n    \"description\": \"Discussion and networking\",\n    \"startAt\": \"2025-01-15T18:00:00Z\",\n    \"endAt\": \"2025-01-15T20:00:00Z\",\n    \"location\": \"HQ Auditorium\"\n  }\n]\n\nUsage notes\n- Ensure groupId is valid and corresponds to an existing group.\n- Remove the request body for cleaner, standards-compliant GET requests.\n- If pagination or filters are supported by your backend, add them as query params in the Params tab."
+					},
+					"response": []
+				},
+				{
+					"name": "Get an event by id",
+					"id": "41575639-07c1664f-717e-4677-9fea-6b80aa8b6212",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Les aventuriers\",\r\n    \"description\": \"Fans d'aventures\",\r\n    \"icone\": \"767\",\r\n    \"photo\": \"bg\",\r\n    \"type\": \"public\",\r\n    \"publication\":true,\r\n    \"creation\": true,\r\n    \"membres\": [],\r\n    \"admins\": []\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/event/690349134dd3bb1536548b7d",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"event",
+								"690349134dd3bb1536548b7d"
+							]
+						},
+						"description": "Purpose\nRetrieve a single event by its unique ID within a specific group.\n\nHTTP Method and URL\n- Method: GET\n- URL: http://localhost:3000/groupe/:groupId/event/:eventId\n\nPath Parameters\n- groupId (string) — The ID of the group that owns the event.\n  - Example: 69033ef2191350f83c6a0136\n- eventId (string) — The ID of the event to retrieve.\n  - Example: 690349134dd3bb1536548b7d\n\nRequest Body\n- This endpoint is a GET and typically does not require a request body.\n- If your server ignores bodies on GET, you can omit it. If accepted for filtering or other purposes, send JSON as raw.\n- Example (ignored by most servers on GET):\n```json\n{\n  \"nom\": \"Les aventuriers\",\n  \"description\": \"Fans d'aventures\",\n  \"icone\": \"767\",\n  \"photo\": \"bg\",\n  \"type\": \"public\",\n  \"publication\": true,\n  \"creation\": true,\n  \"membres\": [],\n  \"admins\": []\n}\n```\n\nSuccessful Response\n- Status: 200 OK\n- Sample JSON:\n```json\n{\n  \"_id\": \"690349134dd3bb1536548b7d\",\n  \"groupId\": \"69033ef2191350f83c6a0136\",\n  \"name\": \"Raid Dominical\",\n  \"description\": \"Sortie VTT du dimanche\",\n  \"startAt\": \"2024-06-15T09:00:00.000Z\",\n  \"endAt\": \"2024-06-15T12:00:00.000Z\",\n  \"location\": \"Bois de Vincennes\",\n  \"visibility\": \"public\"\n}\n```\n\nError Responses\n- 400 Bad Request — Invalid groupId or eventId format.\n- 401 Unauthorized — Missing/invalid authentication (if the API is protected).\n- 403 Forbidden — You do not have permission to access this event.\n- 404 Not Found — No event found for the provided IDs.\n- 500 Internal Server Error — Unexpected server error.\n\nExample cURL\n```bash\ncurl -X GET \\\n  \"http://localhost:3000/groupe/69033ef2191350f83c6a0136/event/690349134dd3bb1536548b7d\" \\\n  -H \"Accept: application/json\"\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Update an event",
+					"id": "41575639-21a818d7-59fe-4e06-8d65-534dcbbcf3bc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Festival Tra\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/event/690349b54dd3bb1536548b8d",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"event",
+								"690349b54dd3bb1536548b8d"
+							]
+						},
+						"description": "**Update an Event**\n\nThis endpoint updates the details of a specific event within a group.\n\n---\n\n**HTTP Method:** `PUT`\n\n**URL:** `localhost:3000/groupe/:groupeId/event/:eventId`\n\n- `:groupeId` — The unique identifier of the group.\n- `:eventId` — The unique identifier of the event to update.\n\n---\n\n### Request Body\nSend a JSON object with the fields to update. Example:\n```json\n{\n  \"nom\": \"Festival Tra\"\n}\n```\n- `nom` (string, required): The new name of the event.\n\n**Headers:**\n- `Content-Type: application/json`\n- *(Add authentication headers if your API requires authentication)*\n\n---\n\n### Responses\n- **200 OK** — Event updated successfully.\n  ```json\n  {\n    \"id\": \"690349b54dd3bb1536548b8d\",\n    \"nom\": \"Festival Tra\",\n    ...\n  }\n  ```\n- **400 Bad Request** — Invalid input or missing required fields.\n  ```json\n  { \"error\": \"Validation failed: 'nom' is required.\" }\n  ```\n- **404 Not Found** — Group or event not found.\n  ```json\n  { \"error\": \"Event not found.\" }\n  ```\n- **500 Internal Server Error** — Unexpected server error.\n  ```json\n  { \"error\": \"Internal server error.\" }\n  ```\n\n---\n\n**Usage Notes:**\n- Ensure both `groupeId` and `eventId` are valid and exist.\n- The request body must be valid JSON.\n- Authentication may be required depending on your API configuration.\n\n---\n\n[View this request](request/41575639-21a818d7-59fe-4e06-8d65-534dcbbcf3bc)  \n[View the Facebook collection](collection/41575639-567e6988-4849-4cd6-b608-f0aa79f296f8)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an event",
+					"id": "41575639-e1de32db-674e-462a-b364-423ad170c7f4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Nocturne\",\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/event/690349b54dd3bb1536548b8d",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"event",
+								"690349b54dd3bb1536548b8d"
+							]
+						},
+						"description": "Summary\nDelete an existing event belonging to a group.\n\nRequest\n- Method: DELETE\n- URL: localhost:3000/groupe/:groupeId/event/:eventId\n\nPath parameters\n- groupeId (string): Unique identifier of the group that owns the event.\n- eventId (string): Unique identifier of the event to delete.\n\nRequest body\n- Content-Type: application/json (raw)\n- Schema: { \"description\": string }\n- Example:\n  {\n    \"description\": \"Nocturne\"\n  }\n\nResponses\n- 200 OK: Event deleted successfully. Response may include a confirmation object or the deleted resource summary.\n- 401 Unauthorized: Authentication is missing or invalid.\n- 404 Not Found: Group or event not found for the supplied identifiers.\n\nUsage notes\n- Idempotency: Repeated DELETE calls for the same event should be treated as idempotent. If the event is already deleted, the server may return 200 with a no-op confirmation or 404 depending on implementation.\n- Authentication: This endpoint requires valid authentication (e.g., bearer token) with permissions to manage events within the specified group."
+					},
+					"response": []
+				}
+			],
+			"id": "41575639-54efcc5b-bcc8-4bf0-9f2c-8b2b12a41f21"
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Create a group",
+					"id": "41575639-b21b869b-0d5e-4a77-b71c-a096fd2e6db4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Week end\",\r\n    \"description\": \"sorties\",\r\n    \"icone\": \"767\",\r\n    \"photo\": \"bg\",\r\n    \"type\": \"public\",\r\n    \"publication\":true,\r\n    \"creation\": true,\r\n    \"membres\": [],\r\n    \"admins\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								""
+							]
+						},
+						"description": "Purpose: Create a new group with the provided details.\n\nEndpoint: POST localhost:3000/groupe/\n\nRequest body (JSON):\n- nom (string, required): Name of the group.\n- description (string, optional): Brief description of the group.\n- icone (string | number, optional): Icon identifier for the group.\n- photo (string, optional): Photo or background reference for the group.\n- type (string, required): Visibility of the group. Example: \"public\" | \"private\".\n- publication (boolean, optional): Whether the group is published/visible.\n- creation (boolean, optional): Indicates creation status flag.\n- membres (array, optional): List of member identifiers.\n- admins (array, optional): List of admin identifiers.\n\nWhat this request does: On success, the server should create a group resource using the provided attributes and persist it. The response typically includes the newly created group's details (e.g., id and the submitted fields)."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all groups",
+					"id": "41575639-4a78b057-3344-4446-adb6-82946dd0d06b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom\": \"Les aventuriers\",\r\n    \"description\": \"Fans d'aventures\",\r\n    \"icone\": \"767\",\r\n    \"photo\": \"bg\",\r\n    \"type\": \"public\",\r\n    \"publication\":true,\r\n    \"creation\": true,\r\n    \"membres\": [],\r\n    \"admins\": []\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/groupes",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupes"
+							]
+						},
+						"description": "Retrieves all group resources.\n\nMethod: GET\nURL: localhost:3000/groupes\n\nBehavior:\n- Returns a list of all existing groups.\n- Pagination, filtering, and sorting are not applied unless supported by the server configuration.\n\nNote about request body:\n- Although this is a GET request, the current request tab contains a raw JSON body with fields typically used for creating a group (e.g., nom, description, icone, photo, type, publication, creation, membres, admins). Most servers ignore bodies on GET requests; this body is included here for reference only and is not required by the endpoint.\n\nExpected responses:\n- 200 OK: Array of group objects."
+					},
+					"response": []
+				},
+				{
+					"name": "Get a group by Id",
+					"id": "41575639-251d3d3b-5bcd-4494-9e5a-b024f7c210ad",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136"
+							]
+						},
+						"description": "Get a group by Id\n\nDescription:\nRetrieves the details of a group resource by its unique identifier. Use this endpoint to fetch group metadata such as name, members, creation date, and other attributes.\n\nRequest:\n- Method: GET\n- URL: http://localhost:3000/groupe/:id\n- Path parameter:\n  - id (string, required) — The unique identifier of the group to retrieve. Example: 69033ef2191350f83c6a0136\n\nQuery parameters:\n- None\n\nAuthentication:\n- Include any required auth (e.g., Bearer token in Authorization header) if the API requires authentication. If no auth is required, note that this is a public endpoint.\n\nResponses:\n- 200 OK — Returns the group object. Example body:\n  {\n    \"_id\": \"69033ef2191350f83c6a0136\",\n    \"name\": \"Study Group\",\n    \"members\": [\"user1\", \"user2\"],\n    \"createdAt\": \"2025-01-01T12:00:00.000Z\"\n  }\n- 404 Not Found — Group with the given id does not exist.\n- 400 Bad Request — Invalid id format.\n- 401 Unauthorized / 403 Forbidden — Authentication/authorization failure (if applicable).\n\nNotes:\n- Ensure the id path parameter is URL-encoded when it contains special characters.\n- Add examples as saved responses if you want to create a mock server later.\n\nExample cURL:\ncurl -X GET \"http://localhost:3000/groupe/69033ef2191350f83c6a0136\" -H \"Accept: application/json\"\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a group",
+					"id": "41575639-4d528405-d8bf-4374-8197-39947e9e9572",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033dc6191350f83c6a0134",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033dc6191350f83c6a0134"
+							]
+						},
+						"description": "Purpose: Permanently delete a group resource by its unique identifier.\n\nHTTP\n- Method: DELETE\n- URL: http://localhost:3000/groupe/:id\n- Path parameter:\n  - id (string, required): The identifier of the group to delete.\n\nAuthentication\n- Requires a valid authorization mechanism (e.g., Bearer token) configured in the request or via an environment/collection variable. A missing/invalid token results in 401.\n\nExpected responses\n- 204 No Content: Group was deleted successfully. The response body is empty.\n- 404 Not Found: No group exists for the provided id.\n- 401 Unauthorized: Authentication is missing or invalid.\n\nExample requests\n- cURL\n  curl -X DELETE \\\n    'http://localhost:3000/groupe/69033dc6191350f83c6a0134' \\\n    -H 'Authorization: Bearer <token>'\n\n- JavaScript (fetch)\n  fetch('http://localhost:3000/groupe/69033dc6191350f83c6a0134', {\n    method: 'DELETE',\n    headers: {\n      'Authorization': 'Bearer <token>'\n    }\n  }).then(res => {\n    if (res.status === 204) {\n      console.log('Deleted');\n    } else if (res.status === 404) {\n      console.log('Not found');\n    } else if (res.status === 401) {\n      console.log('Unauthorized');\n    } else {\n      console.log('Status:', res.status);\n    }\n  }).catch(console.error);\n\nNotes\n- This operation is destructive and cannot be undone.\n- Ensure the group has no dependent resources if your API enforces referential integrity.\n- If your API is versioned or deployed to multiple environments, consider parameterizing the base URL (e.g., using an {{baseUrl}} variable)."
+					},
+					"response": []
+				},
+				{
+					"name": "Update a group",
+					"id": "41575639-f7da3737-9b81-49a1-9de5-2aaf825d9e99",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"photo\":\"ta tete\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136"
+							]
+						},
+						"description": "**Purpose:**\nThis request updates the details of an existing group in the Facebook API.\n\n**Endpoint:**\n`PUT localhost:3000/groupe/:id`\n- `:id` is the unique identifier of the group you want to update. Replace `69033ef2191350f83c6a0136` in the URL with the actual group ID.\n\n**Request Body:**\n- The body must be in raw JSON format.\n- Example:\n```json\n{\n  \"photo\": \"<photo_url_or_identifier>\"\n}\n```\n- `photo` (string): The new photo or identifier for the group. This field is required.\n\n**Usage Notes:**\n- Ensure the group ID in the URL matches the group you intend to update.\n- Only the fields provided in the body will be updated; other group properties remain unchanged.\n- The server should return the updated group object or a success message upon successful update.\n\n**Authentication:**\n- If authentication is required, ensure to include the necessary headers or tokens as specified by your API setup.\n\n**Typical Response:**\n- `200 OK` on success, with the updated group data in the response body.\n- Error codes such as `400 Bad Request` or `404 Not Found` may be returned for invalid input or if the group does not exist.\n\nRefer to the collection documentation for more details on authentication and error handling."
+					},
+					"response": []
+				},
+				{
+					"name": "Add an user in a group",
+					"id": "41575639-7aacc71c-9a77-41b7-9586-db388fe2ee6e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/membre/69036af11611a0e84ecf556a",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"membre",
+								"69036af11611a0e84ecf556a"
+							]
+						},
+						"description": "Summary: Adds a user (member) to a group.\n\nHTTP\n- Method: POST\n- URL: http://localhost:3000/groupe/:groupId/membre/:memberId\n\nPath parameters\n- groupId (string) — ID of the group to add the user to. Example: 69033ef2191350f83c6a0136\n- memberId (string) — ID of the user to add to the group. Example: 69036af11611a0e84ecf556a\n\nRequest body\n- None. This endpoint uses only path parameters.\n\nExpected responses\n- 200 OK — User added to group successfully\n  Example body:\n  {\n    \"success\": true,\n    \"message\": \"User added to group\",\n    \"groupId\": \"69033ef2191350f83c6a0136\",\n    \"memberId\": \"69036af11611a0e84ecf556a\"\n  }\n\n- 400 Bad Request — Invalid parameters\n  Example body:\n  {\n    \"success\": false,\n    \"error\": \"Invalid memberId\"\n  }\n\n- 404 Not Found — Group or user not found\n  Example body:\n  {\n    \"success\": false,\n    \"error\": \"Group not found\"\n  }\n\n- 500 Internal Server Error\n  Example body:\n  {\n    \"success\": false,\n    \"error\": \"Internal server error\"\n  }\n\nExample usage (cURL)\n\ncurl -X POST \"http://localhost:3000/groupe/69033ef2191350f83c6a0136/membre/69036af11611a0e84ecf556a\" \\\n  -H \"Content-Type: application/json\""
+					},
+					"response": []
+				},
+				{
+					"name": "Add an admin to  a group",
+					"id": "41575639-8e66ce93-7466-45af-97fe-d9f4a03fa104",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/admin/69036af11611a0e84ecf556a",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"admin",
+								"69036af11611a0e84ecf556a"
+							]
+						},
+						"description": "Purpose: Add a user as an admin to a specific group.\n\nHTTP Method and URL:\n- Method: POST\n- URL: http://localhost:3000/groupe/:groupId/admin/:userId\n\nPath Parameters:\n- groupId: The unique identifier of the group to which the admin will be added.\n- userId: The unique identifier of the user who will be granted admin privileges for the group.\n\nRequest Body:\n- Expected: Typically empty. If your API supports an optional JSON payload (e.g., metadata), use an object. Otherwise, send no body.\n- Example (empty): no body\n- Example (JSON):\n  {\n    \"role\": \"admin\"\n  }\n\nPossible Responses:\n- 200 OK: User successfully added as an admin to the group. Response may include updated group or membership info.\n- 400 Bad Request: Invalid IDs or user cannot be promoted (e.g., already an admin, group/user validation failed).\n- 401 Unauthorized: Missing or invalid authentication credentials.\n- 404 Not Found: The specified group or user does not exist.\n- 500 Internal Server Error: An unexpected error occurred on the server.\n\nExample cURL:\ncurl -X POST \\\n  \"http://localhost:3000/groupe/69033ef2191350f83c6a0136/admin/69036af11611a0e84ecf556a\" \\\n  -H \"Content-Type: application/json\"\n\nUsage Notes:\n- Ensure authentication headers/tokens are set if required by your API.\n- Replace :groupId and :userId with actual IDs.\n- Leave the body empty unless your API specifies additional fields."
+					},
+					"response": []
+				},
+				{
+					"name": "Remove an user from a group",
+					"id": "41575639-12162262-96b6-4744-9bcc-3f9c885d623a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/groupe/69033ef2191350f83c6a0136/membre/69036af11611a0e84ecf556a",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"groupe",
+								"69033ef2191350f83c6a0136",
+								"membre",
+								"69036af11611a0e84ecf556a"
+							]
+						},
+						"description": "Removes a user (member) from a specific group.\n\n**Purpose:**\nThis endpoint deletes the association between a group and a member, effectively removing the specified user from the group.\n\n**Required URL Parameters:**\n- `groupeId`: The unique identifier of the group.\n- `membreId`: The unique identifier of the member to be removed from the group.\n\n**Expected Behavior:**\nIf both IDs are valid and the member belongs to the group, the member is removed from the group. Returns a success response on completion, or an error if the group or member does not exist or the member is not part of the group."
+					},
+					"response": []
+				}
+			],
+			"id": "41575639-59c1c542-7a2b-40fe-8553-6f4ac0456700"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create an user",
+					"id": "41575639-bc7f28f9-fa55-446d-b88a-5b6656126a1f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom_utilisateur\": \"randria\",\r\n    \"mail\": \"randria\" ,\r\n    \"age\":22,\r\n    \"sexe\":\"homme\",\r\n    \"ville\": \"Paris\",\r\n    \"admin\": false,\r\n    \"groupes\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								""
+							]
+						},
+						"description": "Purpose: Create a new user resource.\n\nEndpoint\n- Method: POST\n- URL: localhost:3000/user/\n\nRequest Body (JSON)\nProvide a JSON object with the following fields:\n- nom_utilisateur (string, required): Unique username for the user.\n- mail (string, required): User email address. Should be a valid email format.\n- age (number, optional): User age in years.\n- sexe (string, optional): User gender. Example values: \"homme\", \"femme\", \"autre\".\n- ville (string, optional): City of residence.\n- admin (boolean, optional): Whether the user has admin privileges. Defaults to false if not provided.\n- groupes (array, optional): List of group identifiers the user belongs to. Defaults to empty array [].\n\nExample Request Body\n{\n  \"nom_utilisateur\": \"randria\",\n  \"mail\": \"randria@example.com\",\n  \"age\": 22,\n  \"sexe\": \"homme\",\n  \"ville\": \"Paris\",\n  \"admin\": false,\n  \"groupes\": []\n}\n\nResponses\n- 201 Created: User successfully created. Response typically includes the created user object and/or its identifier.\n- 400 Bad Request: Validation failed (e.g., missing required fields, invalid email format).\n- 409 Conflict: Username or email already exists.\n- 500 Internal Server Error: Unexpected server error.\n\nNotes\n- Ensure Content-Type: application/json header is set.\n- The server runs locally; make sure the backend is up on port 3000 before sending the request.\n- Field names are in French to match the domain model."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all users",
+					"id": "41575639-76c0eeab-04aa-4d29-a36a-5941bd5f4723",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom_utilisateur\": \"randria\",\r\n    \"mail\": \"2345\" ,\r\n    \"age\":22,\r\n    \"sexe\":\"homme\",\r\n    \"ville\": \"Paris\",\r\n    \"admin\": false,\r\n    \"groupes\": []\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/users",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						},
+						"description": "**Purpose:**\nRetrieve a list of all users in the system.\n\n**HTTP Method:**\nGET\n\n**URL:**\n`localhost:3000/users`\n\n**Required Parameters:**\nNone required. Supports optional query parameters:\n- `page` (integer): Page number for pagination.\n- `limit` (integer): Number of users per page.\n- `search` (string): Filter users by name, email, or other fields.\n- `sort` (string): Sort order, e.g., `name`, `-age`.\n\n**Request Body:**\nNot required for this endpoint. (Body will be ignored if provided.)\n\n**Sample Request:**\n```\nGET localhost:3000/users?page=1&limit=10\n```\n\n**Sample Successful Response (200):**\n```\n[\n  {\n    \"id\": \"123\",\n    \"nom_utilisateur\": \"randria\",\n    \"mail\": \"2345\",\n    \"age\": 22,\n    \"sexe\": \"homme\",\n    \"ville\": \"Paris\",\n    \"admin\": false,\n    \"groupes\": []\n  },\n  ...\n]\n```\n\n**Common Status Codes:**\n- 200: Success. Returns array of user objects.\n- 401: Unauthorized. Authentication required.\n- 403: Forbidden. Insufficient permissions.\n- 500: Internal server error.\n\n**Usage Example:**\n- Retrieve all users: `GET localhost:3000/users`\n- Paginate users: `GET localhost:3000/users?page=2&limit=20`\n- Search users: `GET localhost:3000/users?search=paris`"
+					},
+					"response": []
+				},
+				{
+					"name": "Get an user by id",
+					"id": "41575639-684444fd-802a-4397-b3cd-3efdf6691965",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nom_utilisateur\": \"randria\",\r\n    \"mail\": \"2345\" ,\r\n    \"age\":22,\r\n    \"sexe\":\"homme\",\r\n    \"ville\": \"Paris\",\r\n    \"admin\": false,\r\n    \"groupes\": []\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/user/69035c9d4dd3bb1536548b9d",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"69035c9d4dd3bb1536548b9d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an user",
+					"id": "41575639-1a11970d-4f0e-481b-b12e-32b5f1cfba4b",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"age\":25\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/user/69035c9d4dd3bb1536548b9d",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"69035c9d4dd3bb1536548b9d"
+							]
+						},
+						"description": "This endpoint updates the information of a user identified by their user ID. The request uses a PUT method to send updated user data, such as age, in the request body to modify the user's profile."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an user",
+					"id": "41575639-10797af8-191f-46d7-aada-7e9d2f89be3a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"age\":25\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/user/6903657ccb3de1dedd47b88e",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"user",
+								"6903657ccb3de1dedd47b88e"
+							]
+						},
+						"description": "Delete an user\n\nPurpose:\nDelete a user by their userId. This endpoint removes the user record from the system. Use with caution — this action is irreversible unless your service supports soft-deletes.\n\nEndpoint:\nDELETE http://localhost:3000/user/:userId\n\nPath parameters:\n- userId (string, required): The unique identifier of the user to delete.\n\nRequest body (optional):\nSome implementations may accept an optional JSON body for additional parameters, but typically a DELETE to this endpoint does not require a body. Example: {\"age\":25} (not used for deletion).\n\nResponses:\n- 200 OK: User deleted successfully. Body may contain a confirmation message or the deleted user object.\n- 400 Bad Request: The provided userId is invalid or request is malformed.\n- 401 Unauthorized: Authentication is required or has failed.\n- 404 Not Found: No user exists with the provided userId.\n\nExample curl:\ncurl -X DELETE \"http://localhost:3000/user/6903657ccb3de1dedd47b88e\" -H \"Content-Type: application/json\"\n\nNotes:\n- Ensure proper authentication headers if your API requires them.\n- Double-check the userId before calling this endpoint to avoid accidental deletions."
+					},
+					"response": []
+				}
+			],
+			"id": "41575639-7d37486c-83e2-4efb-9784-02adcd826ac7"
+		},
+		{
+			"name": "Albums",
+			"item": [
+				{
+					"name": "Create an album",
+					"id": "41575639-c7c88797-48b3-4f8d-8420-1a7148927fdc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Miami\",\r\n    \"description\":\"C'est cool\",\r\n    \"photos\":[],\r\n    \"created_at\":\"2025-10-21\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/event/690354fd4dd3bb1536548b95/album",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"event",
+								"690354fd4dd3bb1536548b95",
+								"album"
+							]
+						},
+						"description": "Purpose: Creates a new album for the specified event.\n\nEndpoint\n- Method: POST\n- URL: localhost:3000/event/:eventId/album\n  - In this request, :eventId = 690354fd4dd3bb1536548b95\n\nRequest Body (JSON)\n{\n  \"title\": \"string\",          // Required. Album title.\n  \"description\": \"string\",    // Optional. Short description of the album.\n  \"photos\": [                  // Optional. Array of photo objects or IDs (depends on API implementation). Leave empty to create without photos.\n    /* ... */\n  ],\n  \"created_at\": \"YYYY-MM-DD\"  // Optional. Album creation date in ISO format (date-only shown here).\n}\n\nNotes\n- Set body type to raw JSON.\n- Example body currently configured in this request:\n  {\"title\":\"Miami\",\"description\":\"C'est cool\",\"photos\":[],\"created_at\":\"2025-10-21\"}"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all albums of an event",
+					"id": "41575639-5e17a1be-56ad-4553-9730-7367fc5b65c0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/event/690354fd4dd3bb1536548b95/albums",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"event",
+								"690354fd4dd3bb1536548b95",
+								"albums"
+							]
+						},
+						"description": "Retrieves all albums associated with a specific event. \n\n**Input:**\n- `eventId` (required): The unique identifier of the event, provided in the URL path (e.g., `/event/{eventId}/albums`).\n\n**Output:**\n- Returns a list of albums related to the specified event. Each album typically includes details such as album ID, name, and other relevant metadata."
+					},
+					"response": []
+				},
+				{
+					"name": "Get an album by Id",
+					"id": "41575639-9ea28951-a53b-4254-8c85-0cb00b2cab8f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/event/690354fd4dd3bb1536548b95/album/6903859592e233c4e3893a6f",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"event",
+								"690354fd4dd3bb1536548b95",
+								"album",
+								"6903859592e233c4e3893a6f"
+							]
+						},
+						"description": "Retrieves details of a specific album associated with a given event.\n\n**Endpoint**: `GET /event/:eventId/album/:albumId`\n\n**Path Parameters:**\n- `eventId` (string, required): The unique identifier of the event.\n- `albumId` (string, required): The unique identifier of the album within the event.\n\n**Description:**\nUse this endpoint to fetch information about a particular album belonging to an event. Both `eventId` and `albumId` must be provided in the URL path.\n\n**Example Request:**\n```\nGET /event/690354fd4dd3bb1536548b95/album/6903859592e233c4e3893a6f\n```\n\n**Example Successful Response:**\n```json\n{\n  \"albumId\": \"6903859592e233c4e3893a6f\",\n  \"eventId\": \"690354fd4dd3bb1536548b95\",\n  \"title\": \"Summer Picnic 2024\",\n  \"createdAt\": \"2024-06-01T12:00:00Z\",\n  \"photos\": [\n    {\n      \"photoId\": \"1a2b3c\",\n      \"url\": \"https://example.com/photos/1a2b3c.jpg\",\n      \"caption\": \"Group photo\"\n    },\n    {\n      \"photoId\": \"4d5e6f\",\n      \"url\": \"https://example.com/photos/4d5e6f.jpg\",\n      \"caption\": \"Picnic area\"\n    }\n  ]\n}\n```\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Update an album",
+					"id": "41575639-f9506ac2-fe22-4c76-ac6b-0b145c1843a2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Miami Beach\",\r\n    \"description\":\"Trop bien\",\r\n    \"photos\":[],\r\n    \"created_at\":\"2025-10-21\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/event/690354fd4dd3bb1536548b95/album/6903859592e233c4e3893a6f",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"event",
+								"690354fd4dd3bb1536548b95",
+								"album",
+								"6903859592e233c4e3893a6f"
+							]
+						},
+						"description": "Purpose\nUpdate an existing album that belongs to a specific event.\n\nHTTP\n- Method: PUT\n- URL: http://localhost:3000/event/:eventId/album/:albumId\n\nPath parameters\n- eventId (string): The ID of the parent event. Example: 690354fd4dd3bb1536548b95\n- albumId (string): The ID of the album to update. Example: 6903859592e233c4e3893a6f\n\nRequest body\nContent-Type: application/json\nSchema:\n{\n  title: string,            // required? name of the album\n  description: string,      // optional/required depending on API\n  photos: string[] | object[] // optional; list of photo IDs or photo objects depending on implementation\n  created_at: string        // ISO-8601 date (YYYY-MM-DD or full timestamp)\n}\nExample:\n{\n  \"title\": \"Miami Beach\",\n  \"description\": \"Trop bien\",\n  \"photos\": [],\n  \"created_at\": \"2025-10-21\"\n}\n\nResponses\n- 200 OK: Returns the updated album as JSON.\n  Example body (illustrative):\n  {\n    \"_id\": \"6903859592e233c4e3893a6f\",\n    \"eventId\": \"690354fd4dd3bb1536548b95\",\n    \"title\": \"Miami Beach\",\n    \"description\": \"Trop bien\",\n    \"photos\": [],\n    \"created_at\": \"2025-10-21\",\n    \"updated_at\": \"2025-10-21T12:34:56Z\"\n  }\n- 400 Bad Request: Validation error (e.g., missing required fields or invalid types). Response contains error details.\n- 404 Not Found: No album or event found for the provided IDs.\n\nAuthentication\nIf your API requires auth (e.g., Bearer token), add it in the Authorization tab or set an Authorization header: Authorization: Bearer <token>.\n\nExample\ncurl -X PUT \"http://localhost:3000/event/690354fd4dd3bb1536548b95/album/6903859592e233c4e3893a6f\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"title\": \"Miami Beach\",\n    \"description\": \"Trop bien\",\n    \"photos\": [],\n    \"created_at\": \"2025-10-21\"\n  }'"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an album",
+					"id": "41575639-d0ce9ccc-6f50-432f-8538-9937d43efb32",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\":\"Yes\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/event/690354fd4dd3bb1536548b95/album/6903859592e233c4e3893a6f",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"event",
+								"690354fd4dd3bb1536548b95",
+								"album",
+								"6903859592e233c4e3893a6f"
+							]
+						},
+						"description": "Purpose: Delete an album belonging to a specific event.\n\nURL\n- DELETE /event/:eventId/album/:albumId\n- Example: http://localhost:3000/event/690354fd4dd3bb1536548b95/album/6903859592e233c4e3893a6f\n\nPath parameters\n- eventId: ID of the event that owns the album.\n- albumId: ID of the album to delete.\n\nRequest body\n- Not required for deletion. Any body content (e.g., {\"description\":\"Yes\"}) is ignored by most servers and is not needed.\n\nResponses\n- 200/204 on success (album removed)\n- 400/404 if IDs are invalid or not found\n- 401/403 if not authorized"
+					},
+					"response": []
+				}
+			],
+			"id": "41575639-70f629c5-7ecd-4753-9562-763a9facba5a"
+		},
+		{
+			"name": "Photos",
+			"item": [
+				{
+					"name": "Create a photo",
+					"id": "41575639-aa6e8bce-1171-4ddc-8ca7-699e87708a31",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Plage\",\r\n    \"url\":\"www\",\r\n    \"description\":\"Beau soleil\",\r\n    \"created_at\":\"2025-10-21\",\r\n    \"auteur\": \"690363de38da2eb803a1f334\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/album/69038060b69b8620b3ad7e75/photo",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"album",
+								"69038060b69b8620b3ad7e75",
+								"photo"
+							]
+						},
+						"description": "Purpose: Creates a new photo and attaches it to the specified album.\n\nEndpoint: POST /album/:albumId/photo\n- Example: POST http://localhost:3000/album/69038060b69b8620b3ad7e75/photo\n\nRequest body (JSON):\n- title (string, required): Human-friendly photo title. Example: \"Plage\".\n- url (string, required): Publicly accessible URL or storage link to the image asset. Example: \"https://example.com/image.jpg\".\n- description (string, optional): Short caption or notes about the photo. Example: \"Beau soleil\".\n- created_at (string, optional): Photo creation date in ISO-8601 format (YYYY-MM-DD or full timestamp). Example: \"2025-10-21\".\n- auteur (string, required): Author/owner user ID. Example: \"690363de38da2eb803a1f334\".\n\nBehavior:\n- On success, the server should persist the photo and associate it with the album referenced by :albumId.\n- Typical responses may include 201 Created with the created photo resource in the response body, or relevant 4xx errors for validation/auth issues.\n\nNotes:\n- Ensure the request body is sent as raw JSON.\n- If authentication is required by your API, inherit or set auth on the folder/collection as needed."
+					},
+					"response": []
+				},
+				{
+					"name": "Get all photos",
+					"id": "41575639-001ba505-b667-40f2-b3e6-e2f704bbe312",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/album/69038060b69b8620b3ad7e75/photos",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"album",
+								"69038060b69b8620b3ad7e75",
+								"photos"
+							]
+						},
+						"description": "**Purpose:**\nRetrieves all photos belonging to a specific album.\n\n**Request URL:**\n`GET localhost:3000/album/:albumId/photos`\n\n**Path Parameter:**\n- `albumId` (string): The unique identifier of the album whose photos you want to retrieve. Example: `69038060b69b8620b3ad7e75`\n\n**Example Response:**\n```json\n[\n  {\n    \"id\": \"photoId1\",\n    \"albumId\": \"69038060b69b8620b3ad7e75\",\n    \"url\": \"https://example.com/photo1.jpg\",\n    \"title\": \"Photo 1\",\n    \"description\": \"Description of photo 1\"\n  },\n  {\n    \"id\": \"photoId2\",\n    \"albumId\": \"69038060b69b8620b3ad7e75\",\n    \"url\": \"https://example.com/photo2.jpg\",\n    \"title\": \"Photo 2\",\n    \"description\": \"Description of photo 2\"\n  }\n]\n```\n\n**Status Codes:**\n- `200 OK`: Photos retrieved successfully.\n- `404 Not Found`: Album not found.\n- `500 Internal Server Error`: Server error occurred.\n\n**Usage Notes:**\n- Ensure the `albumId` provided exists in the system.\n- The response is an array of photo objects, each containing details about a photo in the album.\n- No authentication is required unless specified by the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Get a photo by id",
+					"id": "41575639-14bdc532-c0c1-4eb0-bd92-dd3bb0f2284e",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:3000/album/69038060b69b8620b3ad7e75/photo/69038ee202631b2bc4c968e2\n",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"album",
+								"69038060b69b8620b3ad7e75",
+								"photo",
+								"69038ee202631b2bc4c968e2\n"
+							]
+						},
+						"description": "Purpose: Retrieves a specific photo from a given album by IDs. Useful for fetching photo metadata and content reference within the context of an album.\n\nMethod: GET\nEndpoint: /album/:albumId/photo/:photoId\n\nPath parameters:\n- albumId (required): The unique identifier of the album containing the photo. Example: 69038060b69b8620b3ad7e75\n- photoId (required): The unique identifier of the photo to retrieve. Example: 69038ee202631b2bc4c968e2\n\nResponse:\n- 200 OK: Returns the photo resource. Depending on the API implementation, this may include JSON with photo metadata (id, albumId, url, caption, createdAt, etc.) or a binary/image redirect/reference. If JSON, expect fields like:\n  {\n    \"id\": \"<photoId>\",\n    \"albumId\": \"<albumId>\",\n    \"url\": \"https://.../photos/<photoId>.jpg\",\n    \"caption\": \"...\",\n    \"createdAt\": \"ISO-8601 timestamp\"\n  }\n- 404 Not Found: If the album or photo does not exist or the photo is not part of the specified album.\n- 400 Bad Request: If IDs are malformed.\n\nNotes:\n- Ensure your base URL (e.g., http://localhost:3000) is correctly configured.\n- Authentication: Not specified here; if your API requires auth, inherit or set it at the folder/collection level."
+					},
+					"response": []
+				},
+				{
+					"name": "Update a photo",
+					"id": "41575639-c6df2e15-7a2c-4e24-8c92-32b762524e57",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Plage2\",\r\n    \"url\":\"ww\",\r\n    \"description\":\"Beau soleil de Plage\",\r\n    \"created_at\":\"2025-10-21\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/album/69038060b69b8620b3ad7e75/photo/69038ee202631b2bc4c968e2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"album",
+								"69038060b69b8620b3ad7e75",
+								"photo",
+								"69038ee202631b2bc4c968e2"
+							]
+						},
+						"description": "Summary: Update an existing photo resource within an album.\n\nMethod and URL:\n- PUT localhost:3000/album/:albumId/photo/:photoId\n\nRequired path parameters:\n- albumId (string) — The ID of the album containing the photo. Example: 69038060b69b8620b3ad7e75\n- photoId (string) — The ID of the photo to update. Example: 69038ee202631b2bc4c968e2\n\nRequest body schema (JSON):\n- title (string) — New photo title. Example: \"Plage2\"\n- url (string) — Resource URL or image path. Example: \"ww\"\n- description (string) — Photo description. Example: \"Beau soleil de Plage\"\n- created_at (string, date or date-time) — Creation date in ISO-8601 (YYYY-MM-DD or full timestamp). Example: \"2025-10-21\"\n\nExample request body:\n{\n  \"title\": \"Plage2\",\n  \"url\": \"ww\",\n  \"description\": \"Beau soleil de Plage\",\n  \"created_at\": \"2025-10-21\"\n}\n\nSample successful response (200):\n{\n  \"code\": 200,\n  \"message\": \"Photo updated\",\n  \"data\": {\n    \"_id\": \"69038ee202631b2bc4c968e2\",\n    \"albumId\": \"69038060b69b8620b3ad7e75\",\n    \"title\": \"Plage2\",\n    \"url\": \"ww\",\n    \"description\": \"Beau soleil de Plage\",\n    \"created_at\": \"2025-10-21\"\n  }\n}\n\nCommon errors:\n- 404 Photo not found — The specified photoId was not found within the given albumId.\n\nTroubleshooting tips:\n- Confirm albumId and photoId are correct and exist in your database.\n- Ensure your server is running and accessible at localhost:3000.\n- Validate created_at format; prefer ISO-8601 (e.g., 2025-10-21)."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a photo",
+					"id": "41575639-a43885c6-89d8-4fa0-8458-a3093bc6fd94",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"Plage\",\r\n    \"url\":\"www\",\r\n    \"description\":\"Beau soleil\",\r\n    \"created_at\":\"2025-10-21\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:3000/album/69038060b69b8620b3ad7e75/photo/69038ee202631b2bc4c968e2",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"album",
+								"69038060b69b8620b3ad7e75",
+								"photo",
+								"69038ee202631b2bc4c968e2"
+							]
+						},
+						"description": "Purpose: Deletes a photo from a specific album.\n\nHow it works:\n- Method: DELETE\n- URL pattern: /album/:albumId/photo/:photoId\n  - albumId: The unique identifier of the album containing the photo.\n  - photoId: The unique identifier of the photo to delete.\n\nRequest body (optional, for auditing/metadata even on DELETE):\n- title (string): Human-friendly title of the photo (e.g., \"Plage\").\n- url (string): Source URL or reference to the photo file (e.g., \"www\").\n- description (string): Text description or notes about the photo (e.g., \"Beau soleil\").\n- created_at (string, ISO 8601 date/time): When the photo was created (e.g., \"2025-10-21\").\n\nExpected behavior:\n- On success, the server removes the photo identified by photoId from the album identified by albumId and returns a success status (e.g., 200/204).\n- If either ID is invalid or the resource is not found, a 404 may be returned.\n- If deletion is not allowed (e.g., permissions), a 403 may be returned.\n\nNotes:\n- Some servers ignore bodies on DELETE requests; include body only if your backend uses it for validation/auditing.\n- Ensure the base URL and authentication (if any) are configured at the collection/folder level or on this request."
+					},
+					"response": []
+				}
+			],
+			"id": "41575639-1ae4631f-30bb-4ba3-a77c-8483032ee8ec"
+		}
+	]
+}
